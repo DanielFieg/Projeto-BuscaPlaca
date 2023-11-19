@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Website Title -->
     <title>InfoVeich</title>
@@ -212,6 +213,8 @@
     <script src="js/scripts.js"></script> <!-- Custom scripts -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script><!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue-the-mask@0.11.1/dist/vue-the-mask.min.js"></script><!-- Vue Mask -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
     <script>
@@ -227,25 +230,45 @@
             },
             methods: {
                 enviarContato() {
-                    // Aqui você pode fazer algo com os dados do formulário, como enviá-los para um servidor
-                    console.log('Dados do formulário:', this.contato);
-
-                    // Exemplo de como você pode usar o fetch para enviar dados para um servidor
-                    // fetch('sua_url_de_destino', {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
-                    //     },
-                    //     body: JSON.stringify(this.contato),
-                    // })
-                    // .then(response => response.json())
-                    // .then(data => {
-                    //     console.log('Resposta do servidor:', data);
-                    //     // Faça algo com a resposta, se necessário
-                    // })
-                    // .catch((error) => {
-                    //     console.error('Erro ao enviar dados:', error);
-                    // });
+                    axios.post('/saveContato', {
+                        _token: '{{ csrf_token() }}',
+                        Nome: this.contato.Nome,
+                        Telefone: this.contato.Telefone,
+                        Email: this.contato.Email,
+                        Mensagem: this.contato.Mensagem,
+					})
+					.then(response => {
+                        console.log(response);
+						if (response.status === 200) {
+                            // Handle the server response here
+                            console.log('Server response:', response.data);
+                            // You can also reset the form after successful submission
+                            this.resetForm();
+							Swal.fire({
+								title: "Contato Enviado!",
+								text: "Seu contato foi enviado, entraremos em contato assim que possível!",
+								icon: "success"
+							});
+						} else {
+                            Swal.fire({
+								title: "Erro ao enviar contato!",
+								text: "Ocorreu algum erro ao enviar o contato, tente novamente!",
+								icon: "error"
+							});
+                        }
+					})
+					.catch(error => {
+						console.error(error);
+					});
+                },
+                resetForm() {
+                    // Reset the form data
+                    this.contato = {
+                        Nome: '',
+                        Telefone: '',
+                        Email: '',
+                        Mensagem: ''
+                    };
                 }
             }
         });

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('contato', function (Blueprint $table) {
             $table->id();
             $table->string('Nome')->nullable();
-            $table->integer('Telefone')->nullable(); // Change 'number' to 'integer'
+            $table->string('Telefone')->nullable(); // Change 'number' to 'integer'
             $table->string('Email')->nullable();
             $table->string('Mensagem')->nullable();
+            $table->timestamps();
         });
     }
 
