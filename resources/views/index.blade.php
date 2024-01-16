@@ -89,34 +89,34 @@
         </div>
     </header>
     <svg class="header-frame" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 1920 310"><defs><style>.cls-1{fill:#5f4def;}</style></defs><title>header-frame</title><path class="cls-1" d="M0,283.054c22.75,12.98,53.1,15.2,70.635,14.808,92.115-2.077,238.3-79.9,354.895-79.938,59.97-.019,106.17,18.059,141.58,34,47.778,21.511,47.778,21.511,90,38.938,28.418,11.731,85.344,26.169,152.992,17.971,68.127-8.255,115.933-34.963,166.492-67.393,37.467-24.032,148.6-112.008,171.753-127.963,27.951-19.26,87.771-81.155,180.71-89.341,72.016-6.343,105.479,12.388,157.434,35.467,69.73,30.976,168.93,92.28,256.514,89.405,100.992-3.315,140.276-41.7,177-64.9V0.24H0V283.054Z"/></svg>
-
-     <div id="consulta" class="basic-1">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="text-container">
-                        <h2>Deseja fazer uma consulta de veículo pela placa?</h2>
-                        <p>Saber o histórico do seu veículo nunca foi tão fácil! Basta inserir a placa e tenha acesso a uma variedade de informações valiosas. Consulte agora e esteja por dentro de todos os detalhes importantes para tomar decisões informadas sobre o seu veículo!</p>
-                        <div class="form-group">
-                            <input type="text" class="form-control-input" id="nemail" v-model="contato.Placa" required>
-                            <label class="label-control" for="nemail">PLACA</label>
-                            <div class="help-block with-errors"></div>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="form-control-submit-button">CONSULTAR</button>
+    <div id="buscaPlaca">
+        <div id="consulta" class="basic-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="text-container">
+                            <h2>Deseja fazer uma consulta de veículo pela placa?</h2>
+                            <p>Saber o histórico do seu veículo nunca foi tão fácil! Basta inserir a placa e tenha acesso a uma variedade de informações valiosas. Consulte agora e esteja por dentro de todos os detalhes importantes para tomar decisões informadas sobre o seu veículo!</p>
+                            <div class="form-group">
+                                <input type="text" class="form-control-input" id="nemail" v-mask="'AAA-####'" v-model="placa.Placa" required>
+                                <label class="label-control" for="nemail">PLACA</label>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" @click="enviarPlaca" class="form-control-submit-button">CONSULTAR</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="image-container">
-                        <img class="img-fluid" src="images/placa.webp" alt="alternative">
+                    <div class="col-lg-6">
+                        <div class="image-container">
+                            <img class="img-fluid" src="images/placa.webp" alt="alternative">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="buscaPlaca">
+
         <div id="contatos" class="form">
             <div class="container">
                 <div class="row">
@@ -158,6 +158,10 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="icon-container">
+                            <span class="fa-stack">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-lock fa-stack-1x"></i>
+                            </span>
                             <span class="fa-stack">
                                 <a href="https://wa.link/29mf1n" target="_blank">
                                     <i class="fas fa-circle fa-stack-2x"></i>
@@ -215,6 +219,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-the-mask@0.11.1/dist/vue-the-mask.min.js"></script><!-- Vue Mask -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
 
 
     <script>
@@ -226,7 +234,10 @@
                     Telefone: '',
                     Email: '',
                     Mensagem: ''
-                }
+                },
+                placa: {
+                    Placa: ''
+                },
             },
             methods: {
                 enviarContato() {
@@ -269,6 +280,22 @@
                         Email: '',
                         Mensagem: ''
                     };
+                },
+                enviarPlaca() {
+                    console.log('Enviando placa:', this.placa.Placa);
+                    placa = this.placa.Placa.replace('-', '');
+
+                    $.fancybox.open({
+                        src: '{{ route('resultVeiculo', ['']) }}/'+placa,
+                        type: 'ajax',
+                        opts: {
+                            clickOutside: false,
+                            clickSlide: false,
+                            afterClose: function () {
+                                // Additional logic after FancyBox is closed
+                            },
+                        },
+                    });
                 }
             }
         });

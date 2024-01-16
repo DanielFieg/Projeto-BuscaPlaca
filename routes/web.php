@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContatoController;
+use App\Http\Controllers\VeiculoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,3 +18,5 @@ Route::get('/', function () {
     return view('index');
 });
 Route::post('/saveContato', [ContatoController::class, 'saveContato'])->name('saveContato');
+Route::post('/dadosVeiculoByPlaca', [VeiculoController::class, 'dadosVeiculoByPlaca'])->name('dadosVeiculoByPlaca');
+Route::get('/resultVeiculo/{placa}', [VeiculoController::class, 'viewResultVeiculo'])->name('resultVeiculo');
